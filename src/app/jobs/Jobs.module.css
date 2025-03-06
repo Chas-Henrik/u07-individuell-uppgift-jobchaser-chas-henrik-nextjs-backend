@@ -1,0 +1,43 @@
+
+.searchContainer {
+    position: fixed;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    justify-items: center;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: var(--primary-box-shadow);
+    overflow: hidden;
+    > .summary {
+        text-align: left;
+        font-size: 0.7rem;
+        font-weight: 600;
+        cursor: pointer;
+    }
+    > .filtersContainer {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+        width: 100%;
+        padding: 0.5rem 1.5rem;
+        column-gap: 2rem;
+        row-gap: 1rem;
+    }
+}
+
+.main {
+    padding: 1.5rem;
+    max-width: 80rem;
+    min-width: 30rem;
+    margin: 13rem auto;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    border: var(--primary-border);
+    border-radius: 1em;
+}

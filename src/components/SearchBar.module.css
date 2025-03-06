@@ -1,0 +1,26 @@
+
+.searchBar {
+    width: fit-content;
+    margin: 1rem auto;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    border: 1px solid rgb(226,232,240);
+    border-radius: 0.5em;
+    > .searchImg {
+        margin: 0 0.5rem;
+        width: 1.5rem;
+        aspect-ratio: 1/1;
+        object-fit: cover;
+    }
+    > .searchInput {
+        width: 20rem;
+        font-size: 1rem;
+        line-height: 2.3;
+        font-weight: 400;
+        border: none;
+        outline: none;
+        border-radius: 0.5em;
+        background-color: inherit !important;
+    }
+}

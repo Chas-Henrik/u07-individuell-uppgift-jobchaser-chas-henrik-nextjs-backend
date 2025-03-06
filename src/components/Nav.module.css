@@ -1,0 +1,29 @@
+.nav {
+    margin-left: auto;
+    justify-self: center;
+    width: fit-content;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    > .liItem {
+        box-sizing: content-box;
+        list-style: none;
+        width: 5.5rem;
+        height: fit-content;
+        padding: 0.25em;
+        text-align: center;
+        cursor: pointer;
+        border-radius: 0.25rem;
+        font-size: 1.2rem;
+    }
+}
+
+/* On screens that are 800px or more (Tablets & Desktops) */
+@media (min-width: 800px) {
+    .nav {
+        margin-left: 0;
+        flex-wrap: nowrap;
+    }
+}

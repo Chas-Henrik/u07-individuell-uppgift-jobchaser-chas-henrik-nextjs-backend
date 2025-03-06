@@ -1,0 +1,97 @@
+.signUpForm {
+    margin: 2rem auto;
+    padding: 2rem;
+    height: fit-content;
+    width: 90%;
+    max-width: 50rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: var(--primary-border);
+    border-radius: 1em;
+    font-size: 1.5rem;
+    font-weight: 600;
+    > .header {
+        font-size: 2rem;
+        font-weight: 600;
+        padding: 1rem;
+    }
+    > .form {
+        display: grid;
+        grid-template-columns: repeat(1, 1fr);
+        justify-items: stretch;
+        gap: 1rem;
+        .formInputAddress {
+            width: 100%;
+            grid-column: 1 / -1;
+        }
+        .formInputCity {
+            width: 100%;
+        }
+        .formInputCountry {
+            width: 100%;
+            grid-column: 1 / -1;
+        }
+        .formInputPhone {
+            width: 100%;
+            grid-column: 1 / -1;
+        }
+        .formLabel {
+            width: 100%;
+            grid-column: 1 / -1;
+            .formInputDateOfBirth {
+                width: fit-content;
+            }
+        }
+        .formInputEmail {
+            width: 100%;
+            grid-column: 1 / -1;
+        }
+        .formInputPassword {
+            width: 100%;
+            grid-column: 1 / -1;
+        }
+        .formInput {
+            width: 100%;
+            padding: 0.5rem;
+            border-radius: 0.5em;
+            border: var(--primary-border);
+            background-color: inherit;
+            color: inherit;
+        }
+        > .formSubmitButton {
+            width: fit-content;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5em;
+            border: var(--primary-border);
+            grid-column: 1 / -1;
+            justify-self: center;
+        }
+    }
+}
+
+/* On screens that are 650px or more (Tablets & Desktops) */
+@media (min-width: 650px) {
+    .signUpForm {
+        > .form {
+            grid-template-columns: repeat(2, 1fr);
+            .formInputCountry {
+                width: 60%;
+                grid-column: 1 / -1;
+            }
+            .formInputPhone {
+                width: 60%;
+                grid-column: 1 / -1;
+            }
+            .formInputEmail {
+                width: 70%;
+                grid-column: 1 / -1;
+            }
+            .formInputPassword {
+                width: 70%;
+                grid-column: 1 / -1;
+            }
+        }
+    }
+}
