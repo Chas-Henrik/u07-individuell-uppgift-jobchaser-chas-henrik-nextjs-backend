@@ -1,4 +1,3 @@
-
 export type ApiJobData = {
     id: string;
     logo_url: string;
@@ -18,11 +17,24 @@ export type ApiJobType = {
     hits: ApiJobData[] 
 }
 
+export type UserType = {
+    firstname: string;
+    lastname: string;
+    phone: string;
+    email: string;
+    password: string;
+    address?: string | undefined;
+    postalCode?: string | undefined;
+    city?: string | undefined;
+    country?: string | undefined;
+    dateOfBirth?: string | undefined;
+}
+
 export type JobType = {
     id: string;
     favorite: boolean;
-    logo_url: string;
     employer:  string;
+    logo_url: string;
     headline: string;
     position: string;
     role: string;

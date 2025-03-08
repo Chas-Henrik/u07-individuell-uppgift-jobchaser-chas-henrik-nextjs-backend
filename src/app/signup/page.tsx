@@ -6,6 +6,7 @@ import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useContext } from "react";
 import { ThemeContext } from "@/context/themeContext";
+import { createUser } from "@/api/jobChaserApi";
 
 export default function SignUp() {
     const formSchema = z.object({
@@ -29,7 +30,10 @@ export default function SignUp() {
     } = useForm<FormData>({
         resolver: zodResolver(formSchema)
     });
-    const onSubmit: SubmitHandler<FormData> = (data: FormData) => console.log(data)
+    const onSubmit: SubmitHandler<FormData> = async (data: FormData) => {
+        const res = await createUser(data);
+        alert(res.message);
+    };
     const themeContext = useContext(ThemeContext);
     if (!themeContext) {
         throw new Error("ThemeContext is undefined");
