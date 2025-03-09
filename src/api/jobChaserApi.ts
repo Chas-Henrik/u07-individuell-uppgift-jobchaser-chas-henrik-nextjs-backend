@@ -1,6 +1,6 @@
 import { UserType, FavoriteType } from '@/types/types';
 
-const API_URL="http://localhost:3000"
+const API_URL="http://localhost:3008"
 
 // users endpoints
 
