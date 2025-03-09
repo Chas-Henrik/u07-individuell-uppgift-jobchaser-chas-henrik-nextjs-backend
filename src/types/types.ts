@@ -47,3 +47,19 @@ export type JobType = {
     url: string;
 }
 
+export type FavoriteType = {
+    id: string;
+    user_id: number;
+    employer: string;
+    logo_url: string;
+    headline: string;
+    position: string;
+    role: string;
+    posted: Date;
+    expires: Date;
+    contract: string;
+    city: string;
+    region: string;
+    country: string;
+    url: string;
+}

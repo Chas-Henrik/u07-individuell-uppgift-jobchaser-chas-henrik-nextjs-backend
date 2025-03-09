@@ -2,7 +2,8 @@ import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
 import type { RootState } from '@/lib/store'
 import { addLocalStorageFavorites, removeLocalStorageFavorites, readLocalStorageFavorites } from '@/store/localStorage';
-import type { JobType } from '@/types/types'
+import { createFavorite, deleteFavorite } from '@/api/jobChaserApi';
+import type { JobType, FavoriteType } from '@/types/types'
 
 
 
@@ -18,6 +19,23 @@ const initialState: JobsState = {
     loadingComplete: false,
     jobsArr: [], 
     favArr: []
+}
+
+async function addFavorite(job: JobType): Promise<void> {
+    const { favorite, ...rest } = job; // Peel off favorite from job
+    void favorite; // Ignore unused favorite
+    const fav: FavoriteType = { ...rest, user_id: 1, posted: new Date(job.posted), expires: new Date(job.expires) };
+    const res = await createFavorite(fav);
+    if(!res.result) {
+        alert(res.message);
+    }
+}
+
+async function removeFavorite(id: string): Promise<void> {
+    const res = await deleteFavorite(id);
+    if(!res.result) {
+        alert(res.message);
+    }
 }
 
 export const jobsSlice = createSlice({
@@ -46,8 +64,10 @@ export const jobsSlice = createSlice({
                     job.favorite = !job.favorite;
                     if(job.favorite) {
                         addLocalStorageFavorites(job);
+                        addFavorite(job);
                     } else {
                         removeLocalStorageFavorites(job);
+                        removeFavorite(job.id);
                     }
                 }
             });
