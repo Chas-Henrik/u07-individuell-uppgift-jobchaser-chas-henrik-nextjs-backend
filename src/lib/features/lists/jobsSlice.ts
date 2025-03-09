@@ -5,7 +5,7 @@ import { addLocalStorageFavorites, removeLocalStorageFavorites, readLocalStorage
 import { createFavorite, deleteFavorite } from '@/api/jobChaserApi';
 import type { JobType, FavoriteType } from '@/types/types'
 
-
+const USER_ID = 33;
 
 // Define a type for the slice state
 export type JobsState = {
@@ -21,18 +21,18 @@ const initialState: JobsState = {
     favArr: []
 }
 
-async function addFavorite(job: JobType): Promise<void> {
+async function addFavorite(userId: number, job: JobType): Promise<void> {
     const { favorite, ...rest } = job; // Peel off favorite from job
     void favorite; // Ignore unused favorite
-    const fav: FavoriteType = { ...rest, user_id: 1, posted: new Date(job.posted), expires: new Date(job.expires) };
-    const res = await createFavorite(fav);
+    const fav: FavoriteType = { ...rest, posted: new Date(job.posted), expires: new Date(job.expires) };
+    const res = await createFavorite(userId, fav);
     if(!res.result) {
         alert(res.message);
     }
 }
 
-async function removeFavorite(id: string): Promise<void> {
-    const res = await deleteFavorite(id);
+async function removeFavorite(userId: number, id: string): Promise<void> {
+    const res = await deleteFavorite(userId, id);
     if(!res.result) {
         alert(res.message);
     }
@@ -64,10 +64,10 @@ export const jobsSlice = createSlice({
                     job.favorite = !job.favorite;
                     if(job.favorite) {
                         addLocalStorageFavorites(job);
-                        addFavorite(job);
+                        addFavorite(USER_ID, job);
                     } else {
                         removeLocalStorageFavorites(job);
-                        removeFavorite(job.id);
+                        removeFavorite(USER_ID, job.id);
                     }
                 }
             });

@@ -35,14 +35,13 @@ export async function createUser(user: UserType): Promise<{result: boolean; mess
 
 // favorites endpoints
 
-export async function createFavorite(favorite: FavoriteType): Promise<{result: boolean; message: string}> {
+export async function createFavorite(userId: number, favorite: FavoriteType): Promise<{result: boolean; message: string}> {
     try {
-        const userId = 1; // TODO: replace with JWT auth handling
         const response = await fetch(`${API_URL}/favorites`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${userId}`,
+                Authorization: `Bearer ${userId}`,  // TODO: replace with JWT auth handling
             },
             body: JSON.stringify(favorite),
         });
@@ -66,9 +65,8 @@ export async function createFavorite(favorite: FavoriteType): Promise<{result: b
     }
 }
 
-export async function readFavorites(): Promise<{result: boolean; message: string; favorites: FavoriteType[]}> {
+export async function readFavorites(userId: number): Promise<{result: boolean; message: string; favorites: FavoriteType[]}> {
     try {
-        const userId = 1; // TODO: replace with JWT auth handling
         const response = await fetch(`${API_URL}/favorites`, {
             method: 'GET',
             headers: {
@@ -95,13 +93,12 @@ export async function readFavorites(): Promise<{result: boolean; message: string
     }
 }
 
-export async function deleteFavorite(id: string): Promise<{result: boolean; message: string}> {
+export async function deleteFavorite(userId: number, id: string): Promise<{result: boolean; message: string}> {
     try {
-        const userId = 1; // TODO: replace with JWT auth handling
         const response = await fetch(`${API_URL}/favorites/${id}`, {
             method: 'DELETE',
             headers: {
-                Authorization: `Bearer ${userId}`,
+                Authorization: `Bearer ${userId}`,  // TODO: replace with JWT auth handling
             }
         });
 

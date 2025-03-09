@@ -49,7 +49,6 @@ export type JobType = {
 
 export type FavoriteType = {
     id: string;
-    user_id: number;
     employer: string;
     logo_url: string;
     headline: string;
