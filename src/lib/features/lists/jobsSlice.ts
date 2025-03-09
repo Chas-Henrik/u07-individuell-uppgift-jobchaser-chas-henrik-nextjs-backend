@@ -5,7 +5,7 @@ import { addLocalStorageFavorites, removeLocalStorageFavorites, readLocalStorage
 import { createFavorite, deleteFavorite } from '@/api/jobChaserApi';
 import type { JobType, FavoriteType } from '@/types/types'
 
-const USER_ID = 33;
+const USER_ID = 1;
 
 // Define a type for the slice state
 export type JobsState = {
@@ -59,18 +59,23 @@ export const jobsSlice = createSlice({
         toggleFavorite: (state, action: PayloadAction<{id: string} | undefined>) => {
             const favJobArr = [state.jobsArr?.find(job => job.id === action.payload?.id), 
                                 state.favArr?.find(job => job.id === action.payload?.id)];
+            // Update arrays
             favJobArr.forEach((job) => {
                 if(job) {
                     job.favorite = !job.favorite;
-                    if(job.favorite) {
-                        addLocalStorageFavorites(job);
-                        addFavorite(USER_ID, job);
-                    } else {
-                        removeLocalStorageFavorites(job);
-                        removeFavorite(USER_ID, job.id);
-                    }
                 }
             });
+            // Update local storage and API
+            const favJob = favJobArr.find(job => job !== undefined);
+            if(favJob) {
+                if(favJob.favorite) {
+                    addLocalStorageFavorites(favJob);
+                    addFavorite(USER_ID, favJob);
+                } else {
+                    removeLocalStorageFavorites(favJob);
+                    removeFavorite(USER_ID, favJob.id);
+                }
+            }
         },
         fetchFavorites: (state) => {
             state.favArr = readLocalStorageFavorites() as JobType[];
