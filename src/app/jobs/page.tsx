@@ -6,7 +6,7 @@
 import styles from './Jobs.module.css';
 import { useContext } from 'react';
 import { FavoritesLoader } from '@/components/FavoritesLoader';
-import { Loader } from '@/components/Loader';
+import { JobsLoader } from '@/components/JobsLoader';
 import type { JobType } from '@/types/types'
 import { ComboBox } from '@/components/ComboBox';
 import JobList from '@/components/JobList';
@@ -114,7 +114,7 @@ export default function Home() {
       <main className={styles.main} style={themeStyles}>
         <JobList jobsArr={filteredJobs}/>
         {!favoritesLoadingComplete && <FavoritesLoader LoadingCompleteEvent={FavoritesLoadingCompleteEventHandler}/>}
-        {(favoritesLoadingComplete && !jobsLoadingComplete) && <Loader LoadingCompleteEvent={JobsLoadingCompleteEventHandler}/>}
+        {(favoritesLoadingComplete && !jobsLoadingComplete) && <JobsLoader LoadingCompleteEvent={JobsLoadingCompleteEventHandler}/>}
       </main>
     </>
   )

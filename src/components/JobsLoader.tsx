@@ -3,7 +3,7 @@
 // https://jobsearch.api.jobtechdev.se/search?offset=0&limit=100&remote=true
 // https://jobsearch.api.jobtechdev.se/search?remote=true
 
-import styles from './Loader.module.css';
+import styles from './JobsLoader.module.css';
 import { useEffect, useState, useContext } from 'react';
 import useSWR from 'swr';
 import type { ApiJobType, ApiJobData, JobType } from '@/types/types'
@@ -31,7 +31,7 @@ async function fetcher(url: string) {
     }
 }
 
-export function Loader(props: LoaderProps) {
+export function JobsLoader(props: LoaderProps) {
     // Local state variables
     const [showSpinner, setShowSpinner] = useState<boolean>(true);
     const [pageNum, setPageNum] = useState<number>(0);

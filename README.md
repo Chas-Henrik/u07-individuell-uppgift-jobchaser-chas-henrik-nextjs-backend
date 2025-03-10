@@ -27,7 +27,7 @@ The application uses the following 3:rd party libraries/components:
 4. Uuid (for generating unique list ID's)
 5. Shadcn components (ComboBox & Switch)
 6. Tailwind (for styling the shadcn components)
-7. Spinners (for Loader component)
+7. Spinners (for FavoritesLoader & JobsLoader component)
   
   
 Dark/light-mode has been implemented with 'useContext' and the filtering ComboBoxes, Search Input & Favorite Mark/Un-mark have been implemented with Redux Toolkit.
