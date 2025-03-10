@@ -65,31 +65,24 @@ export async function createFavorite(userId: number, favorite: FavoriteType): Pr
     }
 }
 
-export async function readFavorites(userId: number): Promise<{result: boolean; message: string; favorites: FavoriteType[]}> {
+export async function readFavorites(userId: number): Promise<FavoriteType[]> {
     try {
         const response = await fetch(`${API_URL}/favorites`, {
             method: 'GET',
             headers: {
-                Authorization: `Bearer ${userId}`,
+                Authorization: `Bearer ${userId}`,  // TODO: replace with JWT auth handling
             },
         });
 
-        const body = await response.json();
-
         if (!response.ok) {
-            throw new Error(`Failed to read favorites\nHTTP Status Code: ${response.status}\nError message: ${body.message}`);
+            throw new Error(`Failed to read favorites\nHTTP Status Code: ${response.status}\n`);
         }
 
-        return {result: true, message: body.message, favorites: body.favorites};
+        return await response.json();
     }
     catch (error) {
-        if(error instanceof Error) {
-            console.error(error.message);
-            return {result: false, message: error.message, favorites: []};
-        } else {
-            console.error("error", String(error));
-            return {result: false, message: String(error), favorites: []};
-        }
+        const errorStr = (error instanceof Error) ? error.message : String(error);
+        throw new Error(errorStr);
     }
 }
 

@@ -5,13 +5,14 @@ import { useEffect, useContext } from "react";
 import type { JobType } from '@/types/types'
 import JobList from '@/components/JobList';
 import { useAppSelector, useAppDispatch } from '@/lib/hooks'
-import { fetchFavorites, selectFavorites } from '@/lib/features/lists/jobsSlice';
-
+import { setFavoritesLoadingComplete, selectFavoritesLoadingComplete, fetchFavorites, selectFavorites } from '@/lib/features/lists/jobsSlice';
+import { FavoritesLoader } from '@/components/FavoritesLoader';
 import { ThemeContext } from "@/context/themeContext";
 
 export default function Favorites() {
     // Redux Toolkit (jobsSlice)
     const favoriteJobs: JobType[] = useAppSelector(selectFavorites);
+    const favoritesLoadingComplete = useAppSelector(selectFavoritesLoadingComplete);
     const jobsDispatch = useAppDispatch();
 
     const themeContext = useContext(ThemeContext);
@@ -25,6 +26,12 @@ export default function Favorites() {
         boxShadow: darkTheme ? 'var(--primary-box-shadow-dark-theme)' : 'var(--primary-box-shadow-light-theme)'
     };
     
+    // Event Handlers
+
+    function LoadingCompleteEventHandler() {
+        jobsDispatch(setFavoritesLoadingComplete(true));
+    }
+
     useEffect(() => {
         jobsDispatch(fetchFavorites());
     }, [jobsDispatch]);
@@ -32,6 +39,7 @@ export default function Favorites() {
     return (
         <article style={themeStyles} className={styles.favoritesContainer}>
             <JobList jobsArr={favoriteJobs}/>
+            {!favoritesLoadingComplete && <FavoritesLoader LoadingCompleteEvent={LoadingCompleteEventHandler}/>}
         </article>
     )
 }
