@@ -32,10 +32,9 @@ async function fetcher(userId: string): Promise<JobType[]> {
 export function FavoritesLoader(props: LoaderProps) {
     // Local state variables
     const [showSpinner, setShowSpinner] = useState<boolean>(true);
-    const [favoritesLoadingComplete, setFavoritesLoadingComplete] = useState<boolean>(false);
 
     // Redux Toolkit (jobsSlice)
-    const jobsDispatch = useAppDispatch();
+    const favoritesDispatch = useAppDispatch();
 
     // Theme Context
     const themeContext = useContext(ThemeContext);
@@ -57,14 +56,12 @@ export function FavoritesLoader(props: LoaderProps) {
     useEffect(() => {
         if(error){
             console.error(error);
-        } else if (data && !favoritesLoadingComplete) {
-            jobsDispatch(setFavorites(data));
+        } else if (data) {
+            favoritesDispatch(setFavorites(data));
             setShowSpinner(false);
-            setFavoritesLoadingComplete(true);
             props.LoadingCompleteEvent();
         }
-    }, [props, data, error, favoritesLoadingComplete, jobsDispatch]);
-
+    }, [data, error, favoritesDispatch, props]);
 
     return (
         showSpinner && <div style={themeStyles} className={styles.spinnerCircular}><SpinnerCircular size="15rem" thickness={250} speed={100}  color="#0000FF" /><p className={styles.spinnerLabel}>Loading...</p></div>

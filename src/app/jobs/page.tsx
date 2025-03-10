@@ -74,7 +74,7 @@ export default function Home() {
   // Event Handlers
 
   function FavoritesLoadingCompleteEventHandler() {
-      jobsDispatch(setFavoritesLoadingComplete(true));
+    jobsDispatch(setFavoritesLoadingComplete(true));
   }
 
   function JobsLoadingCompleteEventHandler() {

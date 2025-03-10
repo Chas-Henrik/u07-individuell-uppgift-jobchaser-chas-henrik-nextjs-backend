@@ -5,7 +5,7 @@ import styles from './Job.module.css';
 import Image from 'next/image';
 import { useContext } from "react";
 import { ThemeContext } from "@/context/themeContext";
-import { toggleFavorite } from '@/lib/features/lists/jobsSlice';
+import { toggleFavorite, addFavorite, removeFavorite } from '@/lib/features/lists/jobsSlice';
 import { useAppDispatch } from '@/lib/hooks';
 
 export function Job(data: JobType): React.JSX.Element {
@@ -24,12 +24,27 @@ export function Job(data: JobType): React.JSX.Element {
     const favoriteIcon = (data.favorite) ? ((darkTheme) ? "/favorite-filled-dark.svg" : "/favorite-filled.svg") : ((darkTheme) ? "/favorite-dark.svg": "/favorite.svg");
     const favoriteTitle = data.favorite ? "Remove from Favorite" : "Add to Favorite";
 
+    // Event Handlers
+
+    function FavoritesClickedEventHandler(e: React.MouseEvent<HTMLImageElement>) {
+        e.preventDefault();
+        // Update Favorite Array in Redux Store and Database
+        if( !data.favorite ) {
+            jobsDispatch(addFavorite(data));
+        }
+        else {
+            jobsDispatch(removeFavorite(data));
+        }
+        // Toggle Favorite Icon (in both Arrays)
+        jobsDispatch(toggleFavorite({id: data.id}));
+    }
+
     return (
         <article style={themeStyles} id={data.id} className={styles.jobContainer}>
             <img style={themeStyles} className={styles.jobImg} src={logotype} alt={`${data.employer} logo`}/>
             <article className={styles.jobHeaderInfo}>
                 <h2 className={styles.jobHeader}>{data.employer}</h2>
-                <Image id={data.id} className={styles.favoriteImg} src={favoriteIcon} width={24} height={24} onClick={(e) => {jobsDispatch(toggleFavorite({id: (e.target as HTMLImageElement).id}))}} title={favoriteTitle} alt='favorite icon'/>
+                <Image id={data.id} className={styles.favoriteImg} src={favoriteIcon} width={24} height={24} onClick={FavoritesClickedEventHandler} title={favoriteTitle} alt='favorite icon'/>
             </article>
             <div />
             <article className={styles.jobInfo}>

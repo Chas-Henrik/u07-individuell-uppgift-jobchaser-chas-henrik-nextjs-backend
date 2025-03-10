@@ -1,11 +1,11 @@
 'use client'
 
 import styles from './Favorites.module.css';
-import { useEffect, useContext } from "react";
+import { useContext } from "react";
 import type { JobType } from '@/types/types'
 import JobList from '@/components/JobList';
 import { useAppSelector, useAppDispatch } from '@/lib/hooks'
-import { setFavoritesLoadingComplete, selectFavoritesLoadingComplete, fetchFavorites, selectFavorites } from '@/lib/features/lists/jobsSlice';
+import { setFavoritesLoadingComplete, selectFavoritesLoadingComplete, selectFavorites } from '@/lib/features/lists/jobsSlice';
 import { FavoritesLoader } from '@/components/FavoritesLoader';
 import { ThemeContext } from "@/context/themeContext";
 
@@ -31,10 +31,6 @@ export default function Favorites() {
     function FavoritesLoadingCompleteEventHandler() {
         jobsDispatch(setFavoritesLoadingComplete(true));
     }
-
-    useEffect(() => {
-        jobsDispatch(fetchFavorites());
-    }, [jobsDispatch]);
 
     return (
         <article style={themeStyles} className={styles.favoritesContainer}>
