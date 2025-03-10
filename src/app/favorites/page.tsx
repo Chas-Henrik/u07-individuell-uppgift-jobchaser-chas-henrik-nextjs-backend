@@ -28,7 +28,7 @@ export default function Favorites() {
     
     // Event Handlers
 
-    function LoadingCompleteEventHandler() {
+    function FavoritesLoadingCompleteEventHandler() {
         jobsDispatch(setFavoritesLoadingComplete(true));
     }
 
@@ -39,7 +39,7 @@ export default function Favorites() {
     return (
         <article style={themeStyles} className={styles.favoritesContainer}>
             <JobList jobsArr={favoriteJobs}/>
-            {!favoritesLoadingComplete && <FavoritesLoader LoadingCompleteEvent={LoadingCompleteEventHandler}/>}
+            {!favoritesLoadingComplete && <FavoritesLoader LoadingCompleteEvent={FavoritesLoadingCompleteEventHandler}/>}
         </article>
     )
 }

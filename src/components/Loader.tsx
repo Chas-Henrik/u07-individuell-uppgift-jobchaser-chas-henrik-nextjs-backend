@@ -35,7 +35,7 @@ export function Loader(props: LoaderProps) {
     // Local state variables
     const [showSpinner, setShowSpinner] = useState<boolean>(true);
     const [pageNum, setPageNum] = useState<number>(0);
-    const [loadingComplete, setLoadingComplete] = useState<boolean>(false);
+    const [loadingComplete, setJobsLoadingComplete] = useState<boolean>(false);
     const pageSize = 100;
 
     // Redux Toolkit (jobsSlice)
@@ -89,7 +89,7 @@ export function Loader(props: LoaderProps) {
             jobsDispatch(appendJobs(jobsDataArr) ?? []);
             if((pageNum + 1) * 100 >= total){
                 setShowSpinner(false);
-                setLoadingComplete(true);
+                setJobsLoadingComplete(true);
                 props.LoadingCompleteEvent();
             } else {
                 setPageNum((prevPageNum) => prevPageNum + 1);
