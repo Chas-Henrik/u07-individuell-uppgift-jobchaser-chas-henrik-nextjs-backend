@@ -13,13 +13,15 @@ import { useAppDispatch } from '@/lib/hooks'
 import { setFavorites } from '@/lib/features/lists/jobsSlice';
 import { ThemeContext } from "@/context/themeContext";
 
+const USER_ID = "3266e646-0ee7-4c08-a283-552874370f8e";
+
 export type LoaderProps = {
     LoadingCompleteEvent: () => void;
 }
 
 async function fetcher(userId: string): Promise<JobType[]> {
     try {
-        const favJobs = await readFavorites(parseInt(userId));
+        const favJobs = await readFavorites(userId);
         const jobArr: JobType[] = favJobs?.map(fav => ({ ...fav, favorite: true, posted: fav.posted.toString().split(".")[0], expires: fav.expires.toString().split(".")[0] }));
         return jobArr;
     } catch (error) {
@@ -50,7 +52,7 @@ export function FavoritesLoader(props: LoaderProps) {
     };
 
     // Load jobs from API
-    const { data, error } = useSWR("1", fetcher);
+    const { data, error } = useSWR(USER_ID, fetcher);
 
     // React Hooks
     useEffect(() => {

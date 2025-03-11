@@ -4,7 +4,7 @@ import type { RootState } from '@/lib/store'
 import { createFavorite, deleteFavorite } from '@/api/jobChaserApi';
 import type { JobType, FavoriteType } from '@/types/types'
 
-const USER_ID = 1;
+const USER_ID = "3266e646-0ee7-4c08-a283-552874370f8e";
 
 // Define a type for the slice state
 export type JobsState = {
@@ -22,7 +22,7 @@ const initialState: JobsState = {
     favArr: []
 }
 
-async function addFavoriteApi(userId: number, job: JobType): Promise<void> {
+async function addFavoriteApi(userId: string, job: JobType): Promise<void> {
     const { favorite, ...rest } = job; // Peel off favorite from job
     void favorite; // Ignore unused favorite
     const fav: FavoriteType = { ...rest, posted: new Date(job.posted), expires: new Date(job.expires) };
@@ -32,7 +32,7 @@ async function addFavoriteApi(userId: number, job: JobType): Promise<void> {
     }
 }
 
-async function removeFavoriteApi(userId: number, id: string): Promise<void> {
+async function removeFavoriteApi(userId: string, id: string): Promise<void> {
     const res = await deleteFavorite(userId, id);
     if(!res.result) {
         alert(res.message);

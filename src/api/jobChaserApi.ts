@@ -35,7 +35,7 @@ export async function createUser(user: UserType): Promise<{result: boolean; mess
 
 // favorites endpoints
 
-export async function createFavorite(userId: number, favorite: FavoriteType): Promise<{result: boolean; message: string}> {
+export async function createFavorite(userId: string, favorite: FavoriteType): Promise<{result: boolean; message: string}> {
     try {
         const response = await fetch(`${API_URL}/favorites`, {
             method: 'POST',
@@ -65,7 +65,7 @@ export async function createFavorite(userId: number, favorite: FavoriteType): Pr
     }
 }
 
-export async function readFavorites(userId: number): Promise<FavoriteType[]> {
+export async function readFavorites(userId: string): Promise<FavoriteType[]> {
     try {
         const response = await fetch(`${API_URL}/favorites`, {
             method: 'GET',
@@ -86,7 +86,7 @@ export async function readFavorites(userId: number): Promise<FavoriteType[]> {
     }
 }
 
-export async function deleteFavorite(userId: number, id: string): Promise<{result: boolean; message: string}> {
+export async function deleteFavorite(userId: string, id: string): Promise<{result: boolean; message: string}> {
     try {
         const response = await fetch(`${API_URL}/favorites/${id}`, {
             method: 'DELETE',
