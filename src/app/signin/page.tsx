@@ -7,10 +7,29 @@ import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useContext } from "react";
 import { ThemeContext } from "@/context/themeContext";
+import { useAppDispatch } from '@/lib/hooks'
+import { setFavorites } from '@/lib/features/lists/jobsSlice';
+import { signIn } from "@/api/jobChaserApi";
+import type { JobType } from '@/types/types'
+import { readFavorites } from '@/api/jobChaserApi';
 
-
+async function fetcher(): Promise<JobType[]> {
+    try {
+        const favJobs = await readFavorites();
+        const jobArr: JobType[] = (favJobs) ? favJobs.map(fav => ({ ...fav, favorite: true, posted: fav.posted.toString().split(".")[0], expires: fav.expires.toString().split(".")[0] })) : [];
+        console.log("jobArr", jobArr);
+        return jobArr;
+    } catch (error) {
+        console.error(error);
+        window.alert(error);
+        return [];
+    }
+}
 
 export default function SignIn() {
+    // Redux Toolkit (jobsSlice)
+    const favoritesDispatch = useAppDispatch();
+
     const formSchema = z.object({
         email: z.string().email(),
         password: z.string().min(6).max(15)
@@ -24,7 +43,15 @@ export default function SignIn() {
     } = useForm<FormData>({
         resolver: zodResolver(formSchema)
     });
-    const onSubmit: SubmitHandler<FormData> = (data: FormData) => console.log(data)
+    
+    const onSubmit: SubmitHandler<FormData> = async (data: FormData) => {
+        const res = await signIn(data);
+        alert(res.message);
+        if(res.result){
+            const favorites = await fetcher()
+            favoritesDispatch(setFavorites(favorites));
+        }
+    };
 
     const themeContext = useContext(ThemeContext);
     if (!themeContext) {

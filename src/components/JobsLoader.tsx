@@ -82,7 +82,7 @@ export function JobsLoader(props: LoaderProps) {
 
         if(error){
             console.error(error);
-        } else if (data && !loadingComplete) {
+        } else if (typeof data !== 'undefined' && data !== null && !loadingComplete) {
             const total = data?.data?.total.value ?? 0;
             const jobsDataArr = data?.data?.hits.map((job: ApiJobData) => ParseData(job, favoriteJobs)) ?? [];
             jobsDispatch(appendJobs(jobsDataArr) ?? []);

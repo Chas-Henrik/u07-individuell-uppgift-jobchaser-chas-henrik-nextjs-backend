@@ -30,6 +30,11 @@ export type UserType = {
     dateOfBirth?: string | undefined;
 }
 
+export type UserCredentialsType = {
+    email: string;
+    password: string;
+}
+
 export type JobType = {
     id: string;
     favorite: boolean;

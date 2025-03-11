@@ -4,8 +4,6 @@ import type { RootState } from '@/lib/store'
 import { createFavorite, deleteFavorite } from '@/api/jobChaserApi';
 import type { JobType, FavoriteType } from '@/types/types'
 
-const USER_ID = "3266e646-0ee7-4c08-a283-552874370f8e";
-
 // Define a type for the slice state
 export type JobsState = {
     jobsLoadingComplete: boolean;
@@ -22,18 +20,18 @@ const initialState: JobsState = {
     favArr: []
 }
 
-async function addFavoriteApi(userId: string, job: JobType): Promise<void> {
+async function addFavoriteApi(job: JobType): Promise<void> {
     const { favorite, ...rest } = job; // Peel off favorite from job
     void favorite; // Ignore unused favorite
     const fav: FavoriteType = { ...rest, posted: new Date(job.posted), expires: new Date(job.expires) };
-    const res = await createFavorite(userId, fav);
+    const res = await createFavorite(fav);
     if(!res.result) {
         alert(res.message);
     }
 }
 
-async function removeFavoriteApi(userId: string, id: string): Promise<void> {
-    const res = await deleteFavorite(userId, id);
+async function removeFavoriteApi(id: string): Promise<void> {
+    const res = await deleteFavorite(id);
     if(!res.result) {
         alert(res.message);
     }
@@ -60,17 +58,20 @@ export const jobsSlice = createSlice({
         },
         setFavorites: (state, action: PayloadAction<JobType[]>) => {
             state.favArr = (action.payload) ? action.payload : [];
+            state.jobsArr.forEach(job => {
+                job.favorite = state.favArr.some(fav => fav.id === job.id);
+            });
         },
         addFavorite: (state, action: PayloadAction<JobType>) => {
             if(action.payload) {
+                addFavoriteApi(action.payload);
                 state.favArr.push(action.payload);
-                addFavoriteApi(USER_ID, action.payload);
             }
         },
         removeFavorite: (state, action: PayloadAction<JobType>) => {
             if(action.payload) {
+                removeFavoriteApi(action.payload.id);
                 state.favArr = state.favArr.filter(job => job.id !== action.payload.id);
-                removeFavoriteApi(USER_ID, action.payload.id);
             }
         },
         toggleFavorite: (state, action: PayloadAction<{id: string} | undefined>) => {

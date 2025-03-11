@@ -1,12 +1,13 @@
-import { UserType, FavoriteType } from '@/types/types';
+import { UserType, UserCredentialsType, FavoriteType } from '@/types/types';
+import { readLocalStorageJwt, writeLocalStorageJwt } from '@/store/localStorage';
 
 const API_URL="http://localhost:3008"
 
 // users endpoints
 
-export async function createUser(user: UserType): Promise<{result: boolean; message: string}> {
+export async function signUp(user: UserType): Promise<{result: boolean; message: string}> {
     try {
-        const response = await fetch(`${API_URL}/users`, {
+        const response = await fetch(`${API_URL}/sign-up`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -17,7 +18,41 @@ export async function createUser(user: UserType): Promise<{result: boolean; mess
         const body = await response.json();
 
         if (!response.ok) {
-            throw new Error(`Failed to create user\nHTTP Status Code: ${response.status}\nError message: ${body.message}`);
+            throw new Error(`Failed to create user\nHTTP Status Code: ${response.status} ${response.statusText}\nError message: ${body.message}`);
+        }
+
+        return {result: true, message: body.message};
+    }
+    catch (error) {
+        if(error instanceof Error) {
+            console.error(error.message);
+            return {result: false, message: error.message};
+        } else {
+            console.error("error", String(error));
+            return {result: false, message: String(error)};
+        }
+    }
+}
+
+export async function signIn(user: UserCredentialsType): Promise<{result: boolean; message: string}> {
+    try {
+        const response = await fetch(`${API_URL}/sign-in`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(user),
+        });
+
+        const body = await response.json();
+
+        if (!response.ok) {
+            throw new Error(`Failed to create user\nHTTP Status Code: ${response.status} ${response.statusText}\nError message: ${body.message}`);
+        }
+
+        // Store JWT in local storage
+        if(body.token) {
+            writeLocalStorageJwt(body.token);
         }
 
         return {result: true, message: body.message};
@@ -35,13 +70,14 @@ export async function createUser(user: UserType): Promise<{result: boolean; mess
 
 // favorites endpoints
 
-export async function createFavorite(userId: string, favorite: FavoriteType): Promise<{result: boolean; message: string}> {
+export async function createFavorite(favorite: FavoriteType): Promise<{result: boolean; message: string}> {
     try {
+        const jwt = readLocalStorageJwt();
         const response = await fetch(`${API_URL}/favorites`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${userId}`,  // TODO: replace with JWT auth handling
+                Authorization: `Bearer ${jwt}`
             },
             body: JSON.stringify(favorite),
         });
@@ -49,7 +85,7 @@ export async function createFavorite(userId: string, favorite: FavoriteType): Pr
         const body = await response.json();
 
         if (!response.ok) {
-            throw new Error(`Failed to create favorite\nHTTP Status Code: ${response.status}\nError message: ${body.message}`);
+            throw new Error(`Failed to create favorite\nHTTP Status Code: ${response.status} ${response.statusText}\nError message: ${body.message}`);
         }
 
         return {result: true, message: body.message};
@@ -65,20 +101,23 @@ export async function createFavorite(userId: string, favorite: FavoriteType): Pr
     }
 }
 
-export async function readFavorites(userId: string): Promise<FavoriteType[]> {
+export async function readFavorites(): Promise<FavoriteType[]> {
     try {
+        const jwt = readLocalStorageJwt();
         const response = await fetch(`${API_URL}/favorites`, {
             method: 'GET',
             headers: {
-                Authorization: `Bearer ${userId}`,  // TODO: replace with JWT auth handling
+                Authorization: `Bearer ${jwt}`
             },
         });
-
+        console.log("response", response);
         if (!response.ok) {
-            throw new Error(`Failed to read favorites\nHTTP Status Code: ${response.status}\n`);
+            throw new Error(`Failed to delete favorite\nHTTP Status Code: ${response.status} ${response.statusText}`);
         }
 
-        return await response.json();
+        const data = await response.json();
+        console.log("data", data);
+        return data;
     }
     catch (error) {
         const errorStr = (error instanceof Error) ? error.message : String(error);
@@ -86,19 +125,20 @@ export async function readFavorites(userId: string): Promise<FavoriteType[]> {
     }
 }
 
-export async function deleteFavorite(userId: string, id: string): Promise<{result: boolean; message: string}> {
+export async function deleteFavorite(id: string): Promise<{result: boolean; message: string}> {
     try {
+        const jwt = readLocalStorageJwt();
         const response = await fetch(`${API_URL}/favorites/${id}`, {
             method: 'DELETE',
             headers: {
-                Authorization: `Bearer ${userId}`,  // TODO: replace with JWT auth handling
+                Authorization: `Bearer ${jwt}`
             }
         });
 
         const body = await response.json();
 
         if (!response.ok) {
-            throw new Error(`Failed to delete favorite\nHTTP Status Code: ${response.status}\nError message: ${body.message}`);
+            throw new Error(`Failed to delete favorite\nHTTP Status Code: ${response.status} ${response.statusText}\nError message: ${body.message}`);
         }
 
         return {result: true, message: body.message};
