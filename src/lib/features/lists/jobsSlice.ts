@@ -50,6 +50,9 @@ export const jobsSlice = createSlice({
         },
         setJobs: (state, action: PayloadAction<JobType[]>) => {
             state.jobsArr = (action.payload) ? action.payload : [];
+            state.jobsArr.forEach(job => {
+                job.favorite = state.favArr.some(fav => fav.id === job.id);
+            });
         },
         appendJobs: (state, action: PayloadAction<JobType[] | undefined>) => {
             if(action.payload !== undefined && action.payload !== null) {
@@ -58,9 +61,6 @@ export const jobsSlice = createSlice({
         },
         setFavorites: (state, action: PayloadAction<JobType[]>) => {
             state.favArr = (action.payload) ? action.payload : [];
-            state.jobsArr.forEach(job => {
-                job.favorite = state.favArr.some(fav => fav.id === job.id);
-            });
         },
         addFavorite: (state, action: PayloadAction<JobType>) => {
             if(action.payload) {

@@ -7,8 +7,8 @@ import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useContext } from "react";
 import { ThemeContext } from "@/context/themeContext";
-import { useAppDispatch } from '@/lib/hooks'
-import { setFavorites } from '@/lib/features/lists/jobsSlice';
+import { useAppSelector, useAppDispatch } from '@/lib/hooks'
+import { selectJobs, setJobs, setFavorites } from '@/lib/features/lists/jobsSlice';
 import { signIn } from "@/api/jobChaserApi";
 import type { JobType } from '@/types/types'
 import { readFavorites } from '@/api/jobChaserApi';
@@ -28,7 +28,8 @@ async function fetcher(): Promise<JobType[]> {
 
 export default function SignIn() {
     // Redux Toolkit (jobsSlice)
-    const favoritesDispatch = useAppDispatch();
+    const jobsArray = useAppSelector(selectJobs);
+    const jobsDispatch = useAppDispatch();
 
     const formSchema = z.object({
         email: z.string().email(),
@@ -49,7 +50,8 @@ export default function SignIn() {
         alert(res.message);
         if(res.result){
             const favorites = await fetcher()
-            favoritesDispatch(setFavorites(favorites));
+            jobsDispatch(setFavorites(favorites));
+            jobsDispatch(setJobs(jobsArray));
         }
     };
 
