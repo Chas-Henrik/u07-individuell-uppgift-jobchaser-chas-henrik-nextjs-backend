@@ -5,7 +5,6 @@
 
 import styles from './Jobs.module.css';
 import { useContext } from 'react';
-import { FavoritesLoader } from '@/components/FavoritesLoader';
 import { JobsLoader } from '@/components/JobsLoader';
 import type { JobType } from '@/types/types'
 import { ComboBox } from '@/components/ComboBox';
@@ -15,7 +14,7 @@ import { useAppSelector, useAppDispatch } from '@/lib/hooks'
 import { setFilterPosition, setFilterRole, setFilterContract, setFilterCity, setFilterRegion, setFilterCountry, setFilterHeadline,
   selectFilterPosition, selectFilterRole, selectFilterContract, selectFilterCity, selectFilterRegion, selectFilterCountry, selectFilterHeadline
   } from '@/lib/features/filters/filterSlice'
-import { setFavoritesLoadingComplete, setJobsLoadingComplete, selectFavoritesLoadingComplete, selectJobsLoadingComplete, selectJobs } from '@/lib/features/lists/jobsSlice'; 
+import { setJobsLoadingComplete, selectJobsLoadingComplete, selectJobs } from '@/lib/features/lists/jobsSlice'; 
 import { ThemeContext } from "@/context/themeContext";
 
 
@@ -42,7 +41,6 @@ function UpdateFilterTerms(jobsArray: JobType[]): void {
 export default function Home() {
   // Redux Toolkit (jobsSlice)
   const jobsArray = useAppSelector(selectJobs);
-  const favoritesLoadingComplete = useAppSelector(selectFavoritesLoadingComplete);
   const jobsLoadingComplete = useAppSelector(selectJobsLoadingComplete);
 
   const jobsDispatch = useAppDispatch();
@@ -72,10 +70,6 @@ export default function Home() {
   };
 
   // Event Handlers
-
-  function FavoritesLoadingCompleteEventHandler() {
-    jobsDispatch(setFavoritesLoadingComplete(true));
-  }
 
   function JobsLoadingCompleteEventHandler() {
     jobsDispatch(setJobsLoadingComplete(true));
@@ -113,8 +107,7 @@ export default function Home() {
       </details>
       <main className={styles.main} style={themeStyles}>
         <JobList jobsArr={filteredJobs}/>
-        {!favoritesLoadingComplete && <FavoritesLoader LoadingCompleteEvent={FavoritesLoadingCompleteEventHandler}/>}
-        {(favoritesLoadingComplete && !jobsLoadingComplete) && <JobsLoader LoadingCompleteEvent={JobsLoadingCompleteEventHandler}/>}
+        {(!jobsLoadingComplete) && <JobsLoader LoadingCompleteEvent={JobsLoadingCompleteEventHandler}/>}
       </main>
     </>
   )
