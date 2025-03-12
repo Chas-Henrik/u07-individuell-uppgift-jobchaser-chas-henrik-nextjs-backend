@@ -110,13 +110,11 @@ export async function readFavorites(): Promise<FavoriteType[]> {
                 Authorization: `Bearer ${jwt}`
             },
         });
-        console.log("response", response);
         if (!response.ok) {
             throw new Error(`Failed to delete favorite\nHTTP Status Code: ${response.status} ${response.statusText}`);
         }
 
         const data = await response.json();
-        console.log("data", data);
         return data;
     }
     catch (error) {

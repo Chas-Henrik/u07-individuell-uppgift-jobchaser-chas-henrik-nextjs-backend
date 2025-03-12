@@ -8,7 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useContext } from "react";
 import { ThemeContext } from "@/context/themeContext";
 import { useAppSelector, useAppDispatch } from '@/lib/hooks'
-import { selectJobs, setJobs, setFavorites } from '@/lib/features/lists/jobsSlice';
+import { selectJobs, setIsSignedIn, setJobs, setFavorites } from '@/lib/features/lists/jobsSlice';
 import { signIn } from "@/api/jobChaserApi";
 import type { JobType } from '@/types/types'
 import { readFavorites } from '@/api/jobChaserApi';
@@ -17,7 +17,6 @@ async function fetcher(): Promise<JobType[]> {
     try {
         const favJobs = await readFavorites();
         const jobArr: JobType[] = (favJobs) ? favJobs.map(fav => ({ ...fav, favorite: true, posted: fav.posted.toString().split(".")[0], expires: fav.expires.toString().split(".")[0] })) : [];
-        console.log("jobArr", jobArr);
         return jobArr;
     } catch (error) {
         console.error(error);
@@ -52,6 +51,7 @@ export default function SignIn() {
             const favorites = await fetcher()
             jobsDispatch(setFavorites(favorites));
             jobsDispatch(setJobs(jobsArray));
+            jobsDispatch(setIsSignedIn(true));
         }
     };
 

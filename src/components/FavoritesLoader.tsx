@@ -54,14 +54,13 @@ export function FavoritesLoader(props: LoaderProps) {
 
     // React Hooks
     useEffect(() => {
-        console.log(data);
         if(error){
             console.error(error);
-        } else if (typeof data !== 'undefined' || data !== null) {
+        } else if (typeof data !== 'undefined' && data !== null) {
             favoritesDispatch(setFavorites(data));
-            setShowSpinner(false);
-            props.LoadingCompleteEvent();
         }
+        setShowSpinner(false);
+        props.LoadingCompleteEvent();
     }, [data, error, favoritesDispatch, props]);
 
     return (

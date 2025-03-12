@@ -6,6 +6,7 @@ import type { JobType, FavoriteType } from '@/types/types'
 
 // Define a type for the slice state
 export type JobsState = {
+    isSignedIn: boolean;
     jobsLoadingComplete: boolean;
     favoritesLoadingComplete: boolean;
     jobsArr: JobType[];
@@ -14,6 +15,7 @@ export type JobsState = {
 
 // Define the initial state using that type
 const initialState: JobsState = {
+    isSignedIn: false,
     jobsLoadingComplete: false,
     favoritesLoadingComplete: false,
     jobsArr: [], 
@@ -42,6 +44,9 @@ export const jobsSlice = createSlice({
     // `createSlice` will infer the state type from the `initialState` argument
     initialState,
     reducers: {
+        setIsSignedIn: (state, action: PayloadAction<boolean>) => {
+            state.isSignedIn = action.payload;
+        },
         setJobsLoadingComplete: (state, action: PayloadAction<boolean>) => {
             state.jobsLoadingComplete = action.payload;
         },
@@ -87,9 +92,10 @@ export const jobsSlice = createSlice({
     },
 })
 
-export const { setJobsLoadingComplete, setFavoritesLoadingComplete, setJobs, appendJobs, setFavorites, toggleFavorite, addFavorite, removeFavorite } = jobsSlice.actions
+export const { setIsSignedIn, setJobsLoadingComplete, setFavoritesLoadingComplete, setJobs, appendJobs, setFavorites, toggleFavorite, addFavorite, removeFavorite } = jobsSlice.actions
 
 // Other code such as selectors can use the imported `RootState` type
+export const selectIsSignedIn = (state: RootState) => state.jobs.isSignedIn
 export const selectJobsLoadingComplete = (state: RootState) => state.jobs.jobsLoadingComplete
 export const selectFavoritesLoadingComplete = (state: RootState) => state.jobs.favoritesLoadingComplete
 export const selectJobs = (state: RootState) => state.jobs.jobsArr

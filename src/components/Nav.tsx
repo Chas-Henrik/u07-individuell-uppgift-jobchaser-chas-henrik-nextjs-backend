@@ -4,9 +4,12 @@ import styles from './Nav.module.css';
 import React, { useContext }from "react";
 import { motion } from "framer-motion"
 import Link from "next/link";
+import { useAppSelector } from '@/lib/hooks'
+import { selectIsSignedIn } from '@/lib/features/lists/jobsSlice';
 import { ThemeContext } from "@/context/themeContext";
 
 function Nav(): React.JSX.Element {
+    const isSignedIn = useAppSelector(selectIsSignedIn);
     const themeContext = useContext(ThemeContext);
     if (!themeContext) {
         throw new Error("ThemeContext is undefined");
@@ -38,16 +41,16 @@ function Nav(): React.JSX.Element {
                     <p>Sign In</p>
                 </Link>
             </motion.li>
-            <motion.li whileHover={{ scale: 1.2, backgroundColor: darkTheme?'#CCC':'#BBB', boxShadow: darkTheme?'var(--primary-box-shadow-dark-theme-hover)':'var(--primary-box-shadow-light-theme-hover)' }} style={buttonThemeStyles} className={styles.liItem}>
+            {isSignedIn && <motion.li whileHover={{ scale: 1.2, backgroundColor: darkTheme?'#CCC':'#BBB', boxShadow: darkTheme?'var(--primary-box-shadow-dark-theme-hover)':'var(--primary-box-shadow-light-theme-hover)' }} style={buttonThemeStyles} className={styles.liItem}>
                 <Link href="/jobs" scroll={false}>
                     <p>Jobs</p>
                 </Link>
-            </motion.li>
-            <motion.li whileHover={{ scale: 1.2, backgroundColor: darkTheme?'#CCC':'#BBB', boxShadow: darkTheme?'var(--primary-box-shadow-dark-theme-hover)':'var(--primary-box-shadow-light-theme-hover)' }} style={buttonThemeStyles} className={styles.liItem}>
+            </motion.li>}
+            {isSignedIn && <motion.li whileHover={{ scale: 1.2, backgroundColor: darkTheme?'#CCC':'#BBB', boxShadow: darkTheme?'var(--primary-box-shadow-dark-theme-hover)':'var(--primary-box-shadow-light-theme-hover)' }} style={buttonThemeStyles} className={styles.liItem}>
                 <Link href="/favorites" scroll={false}>
                     <p>Favorites</p>
                 </Link>
-            </motion.li>
+            </motion.li>}
         </ul>
     )
 }
