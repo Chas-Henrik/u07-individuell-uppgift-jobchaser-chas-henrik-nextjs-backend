@@ -38,7 +38,7 @@ function Nav(): React.JSX.Element {
             </motion.li>
             <motion.li whileHover={{ scale: 1.2, backgroundColor: darkTheme?'#CCC':'#BBB', boxShadow: darkTheme?'var(--primary-box-shadow-dark-theme-hover)':'var(--primary-box-shadow-light-theme-hover)' }} style={buttonThemeStyles} className={styles.liItem}>
                 <Link href="/signin" scroll={false}>
-                    <p>Sign In</p>
+                    <p>Sign {isSignedIn?"Out":"In"}</p>
                 </Link>
             </motion.li>
             {isSignedIn && <motion.li whileHover={{ scale: 1.2, backgroundColor: darkTheme?'#CCC':'#BBB', boxShadow: darkTheme?'var(--primary-box-shadow-dark-theme-hover)':'var(--primary-box-shadow-light-theme-hover)' }} style={buttonThemeStyles} className={styles.liItem}>

@@ -45,8 +45,7 @@ export default function RootLayout({
   // Sign out on page reload
   useEffect(() => {
     async function signOutAsync() {
-      const res = await signOut();
-      alert(res.message);
+      await signOut();  // Make sure we're signed out on reload
     };
 
     signOutAsync();

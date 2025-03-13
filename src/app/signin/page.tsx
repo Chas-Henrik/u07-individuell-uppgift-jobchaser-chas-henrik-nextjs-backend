@@ -93,7 +93,7 @@ export default function SignIn() {
             }
             { isSignedIn && 
                 <article style={themeStyles} className={styles.signOutArticle}>
-                    <h1 className={styles.header}>User Signed In</h1>
+                    <h1 className={styles.header}>Sign Out</h1>
                     <button className={styles.formSignOutButton} style={themeStyles} type="button" onClick={SignOutClickHandler}>Sign Out</button>
                 </article>
             }
