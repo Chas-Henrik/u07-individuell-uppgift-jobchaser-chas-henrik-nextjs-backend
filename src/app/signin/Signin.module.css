@@ -64,12 +64,6 @@
         font-size: 2rem;
         font-weight: 600;
     }
-    > .paragraph {
-        font-style: italic;
-        font-size: 1.7rem;
-        font-weight: 500;
-        margin: 1rem;
-    }
     > .formSignOutButton {
         width: fit-content;
         margin: 1rem;

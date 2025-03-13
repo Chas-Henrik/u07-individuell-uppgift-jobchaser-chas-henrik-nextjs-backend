@@ -11,8 +11,7 @@ import { useAppSelector, useAppDispatch } from '@/lib/hooks'
 import { selectJobs, setIsSignedIn, setJobs, setFavorites, selectIsSignedIn } from '@/lib/features/lists/jobsSlice';
 import { signIn } from "@/api/jobChaserApi";
 import type { JobType } from '@/types/types'
-import { getSignedInUser, readFavorites } from '@/api/jobChaserApi';
-import { writeLocalStorageJwt } from '@/store/localStorage';
+import { signOut, readFavorites } from '@/api/jobChaserApi';
 
 async function fetcher(): Promise<JobType[]> {
     try {
@@ -57,9 +56,10 @@ export default function SignIn() {
         }
     };
 
-    function SignOutClickHandler() {
+    async function SignOutClickHandler() {
+        const res = await signOut();
+        alert(res.message);
         jobsDispatch(setIsSignedIn(false));
-        writeLocalStorageJwt('');
     }
 
     const themeContext = useContext(ThemeContext);
@@ -93,8 +93,7 @@ export default function SignIn() {
             }
             { isSignedIn && 
                 <article style={themeStyles} className={styles.signOutArticle}>
-                    <h1 className={styles.header}>Signed In User</h1>
-                    <p className={styles.paragraph}>{`${getSignedInUser()}`}</p>
+                    <h1 className={styles.header}>User Signed In</h1>
                     <button className={styles.formSignOutButton} style={themeStyles} type="button" onClick={SignOutClickHandler}>Sign Out</button>
                 </article>
             }

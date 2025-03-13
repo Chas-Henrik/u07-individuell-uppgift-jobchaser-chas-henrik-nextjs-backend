@@ -1,5 +1,4 @@
 import { UserType, UserCredentialsType, FavoriteType } from '@/types/types';
-import { readLocalStorageJwt, writeLocalStorageJwt } from '@/store/localStorage';
 
 const API_URL="http://localhost:3008"
 
@@ -12,6 +11,7 @@ export async function signUp(user: UserType): Promise<{result: boolean; message:
             headers: {
                 'Content-Type': 'application/json',
             },
+            credentials: 'include',
             body: JSON.stringify(user),
         });
 
@@ -41,18 +41,14 @@ export async function signIn(user: UserCredentialsType): Promise<{result: boolea
             headers: {
                 'Content-Type': 'application/json',
             },
+            credentials: 'include',
             body: JSON.stringify(user),
         });
 
         const body = await response.json();
 
         if (!response.ok) {
-            throw new Error(`Failed to create user\nHTTP Status Code: ${response.status} ${response.statusText}\nError message: ${body.message}`);
-        }
-
-        // Store JWT in local storage
-        if(body.token) {
-            writeLocalStorageJwt(body.token);
+            throw new Error(`Failed to sign-in user\nHTTP Status Code: ${response.status} ${response.statusText}\nError message: ${body.message}`);
         }
 
         return {result: true, message: body.message};
@@ -68,26 +64,42 @@ export async function signIn(user: UserCredentialsType): Promise<{result: boolea
     }
 }
 
-export function getSignedInUser(): string {
-    const jwt = readLocalStorageJwt();
-    const parts = jwt.split('.');
-    if (parts.length !== 3) {
-        return '';
+export async function signOut(): Promise<{result: boolean; message: string}> {
+    try {
+        const response = await fetch(`${API_URL}/sign-out`, {
+            method: 'POST',
+            credentials: 'include',
+        });
+
+        const body = await response.json();
+
+        if (!response.ok) {
+            throw new Error(`Failed to sign-out user\nHTTP Status Code: ${response.status} ${response.statusText}\nError message: ${body.message}`);
+        }
+
+        return {result: true, message: body.message};
     }
-    return JSON.parse(atob(parts[1])).email;
+    catch (error) {
+        if(error instanceof Error) {
+            console.error(error.message);
+            return {result: false, message: error.message};
+        } else {
+            console.error("error", String(error));
+            return {result: false, message: String(error)};
+        }
+    }
 }
 
 // favorites endpoints
 
 export async function createFavorite(favorite: FavoriteType): Promise<{result: boolean; message: string}> {
     try {
-        const jwt = readLocalStorageJwt();
         const response = await fetch(`${API_URL}/favorites`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${jwt}`
             },
+            credentials: 'include',
             body: JSON.stringify(favorite),
         });
 
@@ -112,15 +124,12 @@ export async function createFavorite(favorite: FavoriteType): Promise<{result: b
 
 export async function readFavorites(): Promise<FavoriteType[]> {
     try {
-        const jwt = readLocalStorageJwt();
         const response = await fetch(`${API_URL}/favorites`, {
             method: 'GET',
-            headers: {
-                Authorization: `Bearer ${jwt}`
-            },
+            credentials: 'include',
         });
         if (!response.ok) {
-            throw new Error(`Failed to delete favorite\nHTTP Status Code: ${response.status} ${response.statusText}`);
+            throw new Error(`Failed to read favorites\nHTTP Status Code: ${response.status} ${response.statusText}`);
         }
 
         const data = await response.json();
@@ -134,12 +143,9 @@ export async function readFavorites(): Promise<FavoriteType[]> {
 
 export async function deleteFavorite(id: string): Promise<{result: boolean; message: string}> {
     try {
-        const jwt = readLocalStorageJwt();
         const response = await fetch(`${API_URL}/favorites/${id}`, {
             method: 'DELETE',
-            headers: {
-                Authorization: `Bearer ${jwt}`
-            }
+            credentials: 'include',
         });
 
         const body = await response.json();

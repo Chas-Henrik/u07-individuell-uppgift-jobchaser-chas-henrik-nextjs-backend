@@ -8,7 +8,7 @@ import Header from '@/components/Header'
 import { useEffect } from "react";
 import { ThemeContext } from "@/context/themeContext";
 import StoreProvider from "./StoreProvider";
-import { writeLocalStorageJwt } from '@/store/localStorage';
+import { signOut } from "@/api/jobChaserApi";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -44,7 +44,12 @@ export default function RootLayout({
 
   // Sign out on page reload
   useEffect(() => {
-    writeLocalStorageJwt('');
+    async function signOutAsync() {
+      const res = await signOut();
+      alert(res.message);
+    };
+
+    signOutAsync();
   }, []);
 
   return (
