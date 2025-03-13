@@ -2,16 +2,17 @@
 
 import styles from './Signin.module.css'
 import Link from "next/link";
-import { useForm, SubmitHandler } from "react-hook-form"
+import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useContext } from "react";
 import { ThemeContext } from "@/context/themeContext";
 import { useAppSelector, useAppDispatch } from '@/lib/hooks'
-import { selectJobs, setIsSignedIn, setJobs, setFavorites } from '@/lib/features/lists/jobsSlice';
+import { selectJobs, setIsSignedIn, setJobs, setFavorites, selectIsSignedIn } from '@/lib/features/lists/jobsSlice';
 import { signIn } from "@/api/jobChaserApi";
 import type { JobType } from '@/types/types'
-import { readFavorites } from '@/api/jobChaserApi';
+import { getSignedInUser, readFavorites } from '@/api/jobChaserApi';
+import { writeLocalStorageJwt } from '@/store/localStorage';
 
 async function fetcher(): Promise<JobType[]> {
     try {
@@ -28,6 +29,7 @@ async function fetcher(): Promise<JobType[]> {
 export default function SignIn() {
     // Redux Toolkit (jobsSlice)
     const jobsArray = useAppSelector(selectJobs);
+    const isSignedIn = useAppSelector(selectIsSignedIn);
     const jobsDispatch = useAppDispatch();
 
     const formSchema = z.object({
@@ -44,7 +46,7 @@ export default function SignIn() {
         resolver: zodResolver(formSchema)
     });
     
-    const onSubmit: SubmitHandler<FormData> = async (data: FormData) => {
+    async function submitHandler(data: FormData): Promise<void>{
         const res = await signIn(data);
         alert(res.message);
         if(res.result){
@@ -54,6 +56,11 @@ export default function SignIn() {
             jobsDispatch(setIsSignedIn(true));
         }
     };
+
+    function SignOutClickHandler() {
+        jobsDispatch(setIsSignedIn(false));
+        writeLocalStorageJwt('');
+    }
 
     const themeContext = useContext(ThemeContext);
     if (!themeContext) {
@@ -67,19 +74,30 @@ export default function SignIn() {
     };
 
     return (
-        <article style={themeStyles} className={styles.signinForm}>
-            <h1 className={styles.header}>Login</h1>
-            <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
-                <input className={styles.formInput} type="email" placeholder="E-mail" {...register("email", { required: true })} />
-                {errors.email && <span className="text-red-500 text-base w-fit">{errors.email.message}</span>}
-                <input className={styles.formInput} type="password" placeholder="Password" {...register("password", { required: true })} />
-                {errors.password && <span className="text-red-500 text-base w-fit">{errors.password.message}</span>}
-                <button className={styles.formSubmitButton} type="submit">Submit</button>
-                <div></div>
-            </form>
-            <Link href="/signup" scroll={false}>
-                <p className={styles.signupLink}>Register here to Sign Up</p>
-            </Link>
-        </article>
+        <>
+            { !isSignedIn && 
+                <article style={themeStyles} className={styles.signInForm}>
+                    <h1 className={styles.header}>Sign In</h1>
+                    <form className={styles.form} onSubmit={handleSubmit(submitHandler)}>
+                        <input className={styles.formInput} type="email" placeholder="E-mail" {...register("email", { required: true })} />
+                        {errors.email && <span className="text-red-500 text-base w-fit">{errors.email.message}</span>}
+                        <input className={styles.formInput} type="password" placeholder="Password" {...register("password", { required: true })} />
+                        {errors.password && <span className="text-red-500 text-base w-fit">{errors.password.message}</span>}
+                        <button className={styles.formSubmitButton} style={themeStyles} type="submit">Submit</button>
+                        <div></div>
+                    </form>
+                    <Link href="/signup" scroll={false}>
+                        <p className={styles.signupLink}>Register here to Sign Up</p>
+                    </Link>
+                </article>
+            }
+            { isSignedIn && 
+                <article style={themeStyles} className={styles.signOutArticle}>
+                    <h1 className={styles.header}>Signed In User</h1>
+                    <p className={styles.paragraph}>{`${getSignedInUser()}`}</p>
+                    <button className={styles.formSignOutButton} style={themeStyles} type="button" onClick={SignOutClickHandler}>Sign Out</button>
+                </article>
+            }
+        </>
     )
 }

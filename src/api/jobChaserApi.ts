@@ -68,6 +68,15 @@ export async function signIn(user: UserCredentialsType): Promise<{result: boolea
     }
 }
 
+export function getSignedInUser(): string {
+    const jwt = readLocalStorageJwt();
+    const parts = jwt.split('.');
+    if (parts.length !== 3) {
+        return '';
+    }
+    return JSON.parse(atob(parts[1])).email;
+}
+
 // favorites endpoints
 
 export async function createFavorite(favorite: FavoriteType): Promise<{result: boolean; message: string}> {

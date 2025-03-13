@@ -30,7 +30,8 @@ export default function SignUp() {
     } = useForm<FormData>({
         resolver: zodResolver(formSchema)
     });
-    const onSubmit: SubmitHandler<FormData> = async (data: FormData) => {
+
+    async function submitHandler(data: FormData): Promise<void> {
         const res = await signUp(data);
         alert(res.message);
     };
@@ -49,7 +50,7 @@ export default function SignUp() {
     return (
         <article style={themeStyles} className={styles.signUpForm}>
         <h1 className={styles.header}>Create Account</h1>
-            <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
+            <form className={styles.form} onSubmit={handleSubmit(submitHandler)}>
                 <div><input className={`${styles.formInput}`} type="text" placeholder="First Name" {...register("firstname", { required: true })} />
                 {errors.firstname?.message && <span className="text-red-500 text-base w-fit">{errors.firstname.message}</span>}</div>
                 <div><input className={`${styles.formInput}`} type="text" placeholder="Last Name" {...register("lastname", { required: true })} />
@@ -70,7 +71,7 @@ export default function SignUp() {
                 {errors.email?.message && <span className="text-red-500 text-base w-fit">{errors.email.message}</span>}</div>
                 <div className={`${styles.formInputPassword}`}><input className={`${styles.formInput}`} type="password" placeholder="Password" minLength={6} {...register("password", { required: true })} />
                 {errors.password?.message && <span className="text-red-500 text-base w-fit">{errors.password.message}</span>}</div>
-                <button className={styles.formSubmitButton} type="submit">Submit</button>
+                <button className={styles.formSubmitButton} style={themeStyles} type="submit">Submit</button>
             </form>
         </article>
     )
