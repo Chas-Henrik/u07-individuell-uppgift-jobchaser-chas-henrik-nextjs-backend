@@ -92,7 +92,8 @@ export async function signOut(): Promise<{result: boolean; message: string}> {
 
 // favorites endpoints
 
-export async function createFavorite(favorite: FavoriteType): Promise<{result: boolean; message: string}> {
+export async function createFavorite(favorite: FavoriteType): Promise<{result: boolean; redirect: boolean; message: string}> {
+    let redirect = false;
     try {
         const response = await fetch(`${API_URL}/favorites`, {
             method: 'POST',
@@ -106,42 +107,58 @@ export async function createFavorite(favorite: FavoriteType): Promise<{result: b
         const body = await response.json();
 
         if (!response.ok) {
+            if (response.status === 401) {
+                redirect = true;
+            }
             throw new Error(`Failed to create favorite\nHTTP Status Code: ${response.status} ${response.statusText}\nError message: ${body.message}`);
         }
 
-        return {result: true, message: body.message};
+        return {result: true, redirect: redirect, message: body.message};
     }
     catch (error) {
         if(error instanceof Error) {
-            console.error(error.message);
-            return {result: false, message: error.message};
+            return {result: false, redirect: redirect, message: error.message};
         } else {
-            console.error("error", String(error));
-            return {result: false, message: String(error)};
+            return {result: false, redirect: redirect, message: String(error)};
         }
     }
 }
 
+export class ErrorUnauthorized extends Error {
+    constructor(message: string) {
+        super(message);
+        this.name = "ErrorUnauthorized";
+    }
+}
+
 export async function readFavorites(): Promise<FavoriteType[]> {
+    let unAuthorized = false;
     try {
         const response = await fetch(`${API_URL}/favorites`, {
             method: 'GET',
             credentials: 'include',
         });
         if (!response.ok) {
+            if (response.status === 401) {
+                unAuthorized = true;
+            }
             throw new Error(`Failed to read favorites\nHTTP Status Code: ${response.status} ${response.statusText}`);
         }
-
         const data = await response.json();
         return data;
     }
     catch (error) {
         const errorStr = (error instanceof Error) ? error.message : String(error);
-        throw new Error(errorStr);
+        if(unAuthorized) {
+            throw new ErrorUnauthorized(errorStr);
+        } else {
+            throw new Error(errorStr);
+        }
     }
 }
 
-export async function deleteFavorite(id: string): Promise<{result: boolean; message: string}> {
+export async function deleteFavorite(id: string): Promise<{result: boolean; redirect: boolean; message: string}> {
+    let redirect = false;
     try {
         const response = await fetch(`${API_URL}/favorites/${id}`, {
             method: 'DELETE',
@@ -151,18 +168,19 @@ export async function deleteFavorite(id: string): Promise<{result: boolean; mess
         const body = await response.json();
 
         if (!response.ok) {
+            if (response.status === 401) {
+                redirect = true;
+            }
             throw new Error(`Failed to delete favorite\nHTTP Status Code: ${response.status} ${response.statusText}\nError message: ${body.message}`);
         }
 
-        return {result: true, message: body.message};
+        return {result: true, redirect: redirect, message: body.message};
     }
     catch (error) {
         if(error instanceof Error) {
-            console.error(error.message);
-            return {result: false, message: error.message};
+            return {result: false, redirect: redirect, message: error.message};
         } else {
-            console.error("error", String(error));
-            return {result: false, message: String(error)};
+            return {result: false, redirect: redirect, message: String(error)};
         }
     }
 }

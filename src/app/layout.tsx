@@ -9,6 +9,7 @@ import { useEffect } from "react";
 import { ThemeContext } from "@/context/themeContext";
 import StoreProvider from "./StoreProvider";
 import { signOut } from "@/api/jobChaserApi";
+import { redirect } from 'next/navigation';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -46,6 +47,7 @@ export default function RootLayout({
   useEffect(() => {
     async function signOutAsync() {
       await signOut();  // Make sure we're signed out on reload
+      redirect('/');    // Redirect to home page
     };
 
     signOutAsync();

@@ -11,17 +11,22 @@ import { useAppSelector, useAppDispatch } from '@/lib/hooks'
 import { selectJobs, setIsSignedIn, setJobs, setFavorites, selectIsSignedIn } from '@/lib/features/lists/jobsSlice';
 import { signIn } from "@/api/jobChaserApi";
 import type { JobType } from '@/types/types'
-import { signOut, readFavorites } from '@/api/jobChaserApi';
+import { ErrorUnauthorized, signOut, readFavorites } from '@/api/jobChaserApi';
+import { redirect } from 'next/navigation';
 
-async function fetcher(): Promise<JobType[]> {
+async function fetcher(): Promise<JobType[] | string> {
     try {
         const favJobs = await readFavorites();
         const jobArr: JobType[] = (favJobs) ? favJobs.map(fav => ({ ...fav, favorite: true, posted: fav.posted.toString().split(".")[0], expires: fav.expires.toString().split(".")[0] })) : [];
         return jobArr;
     } catch (error) {
-        console.error(error);
         window.alert(error);
-        return [];
+        if(error instanceof ErrorUnauthorized) {
+            return '/signin'
+        }
+        else {
+            return [];
+        }
     }
 }
 
@@ -49,10 +54,15 @@ export default function SignIn() {
         const res = await signIn(data);
         alert(res.message);
         if(res.result){
-            const favorites = await fetcher()
-            jobsDispatch(setFavorites(favorites));
-            jobsDispatch(setJobs(jobsArray));
-            jobsDispatch(setIsSignedIn(true));
+            const res = await fetcher()
+            if (Array.isArray(res)) {
+                jobsDispatch(setFavorites(res));
+                jobsDispatch(setJobs(jobsArray));
+                jobsDispatch(setIsSignedIn(true));
+            } else {
+                jobsDispatch(setIsSignedIn(false));
+                redirect(res);
+            }
         }
     };
 

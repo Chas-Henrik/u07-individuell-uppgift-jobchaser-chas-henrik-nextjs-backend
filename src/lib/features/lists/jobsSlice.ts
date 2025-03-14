@@ -1,8 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
 import type { RootState } from '@/lib/store'
-import { createFavorite, deleteFavorite } from '@/api/jobChaserApi';
-import type { JobType, FavoriteType } from '@/types/types'
+import type { JobType } from '@/types/types';
 
 // Define a type for the slice state
 export type JobsState = {
@@ -20,23 +19,6 @@ const initialState: JobsState = {
     favoritesLoadingComplete: false,
     jobsArr: [], 
     favArr: []
-}
-
-async function addFavoriteApi(job: JobType): Promise<void> {
-    const { favorite, ...rest } = job; // Peel off favorite from job
-    void favorite; // Ignore unused favorite
-    const fav: FavoriteType = { ...rest, posted: new Date(job.posted), expires: new Date(job.expires) };
-    const res = await createFavorite(fav);
-    if(!res.result) {
-        alert(res.message);
-    }
-}
-
-async function removeFavoriteApi(id: string): Promise<void> {
-    const res = await deleteFavorite(id);
-    if(!res.result) {
-        alert(res.message);
-    }
 }
 
 export const jobsSlice = createSlice({
@@ -69,13 +51,11 @@ export const jobsSlice = createSlice({
         },
         addFavorite: (state, action: PayloadAction<JobType>) => {
             if(action.payload) {
-                addFavoriteApi(action.payload);
                 state.favArr.push(action.payload);
             }
         },
         removeFavorite: (state, action: PayloadAction<JobType>) => {
             if(action.payload) {
-                removeFavoriteApi(action.payload.id);
                 state.favArr = state.favArr.filter(job => job.id !== action.payload.id);
             }
         },

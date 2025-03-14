@@ -1,12 +1,14 @@
 'use client'
 
-import type { JobType } from '@/types/types'
+import type { JobType, FavoriteType } from '@/types/types'
 import styles from './Job.module.css';
 import Image from 'next/image';
 import { useContext } from "react";
 import { ThemeContext } from "@/context/themeContext";
-import { toggleFavorite, addFavorite, removeFavorite } from '@/lib/features/lists/jobsSlice';
+import { setIsSignedIn, toggleFavorite, addFavorite, removeFavorite } from '@/lib/features/lists/jobsSlice';
 import { useAppDispatch } from '@/lib/hooks';
+import { createFavorite, deleteFavorite } from '@/api/jobChaserApi';
+import { redirect } from 'next/navigation';
 
 export function Job(data: JobType): React.JSX.Element {
     const jobsDispatch = useAppDispatch();
@@ -24,18 +26,45 @@ export function Job(data: JobType): React.JSX.Element {
     const favoriteIcon = (data.favorite) ? ((darkTheme) ? "/favorite-filled-dark.svg" : "/favorite-filled.svg") : ((darkTheme) ? "/favorite-dark.svg": "/favorite.svg");
     const favoriteTitle = data.favorite ? "Remove from Favorite" : "Add to Favorite";
 
+    async function addFavoriteDB(job: JobType): Promise<void> {
+        const { favorite, ...rest } = job; // Peel off favorite from job
+        void favorite; // Ignore unused favorite
+        const fav: FavoriteType = { ...rest, posted: new Date(job.posted), expires: new Date(job.expires) };
+        const res = await createFavorite(fav);
+        if(!res.result) {
+            alert(res.message);
+        }
+        if(res.redirect) {
+            jobsDispatch(setIsSignedIn(false));
+            redirect('/signin');
+        }
+    }
+    
+    async function removeFavoriteDB(id: string): Promise<void> {
+        const res = await deleteFavorite(id);
+        if(!res.result) {
+            alert(res.message);
+        }
+        if(res.redirect) {
+            jobsDispatch(setIsSignedIn(false));
+            redirect('/signin');
+        }
+    }
+
     // Event Handlers
 
-    function FavoritesClickedEventHandler(e: React.MouseEvent<HTMLImageElement>) {
+    async function FavoritesClickedEventHandler(e: React.MouseEvent<HTMLImageElement>) {
         e.preventDefault();
-        // Update Favorite Array in Redux Store and Database
+        // Update Favorite Array in Redux Store and Database (note that data is read-only)
         if( !data.favorite ) {
+            await addFavoriteDB(data);
             jobsDispatch(addFavorite(data));
         }
         else {
+            await removeFavoriteDB(data.id);
             jobsDispatch(removeFavorite(data));
         }
-        // Toggle Favorite Icon (in both Arrays)
+        // Toggle Favorite Icon (in Job & Favorite Array)
         jobsDispatch(toggleFavorite({id: data.id}));
     }
 
