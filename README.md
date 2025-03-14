@@ -32,6 +32,8 @@ The application uses the following 3:rd party libraries/components:
   
 Dark/light-mode has been implemented with 'useContext' and the filtering ComboBoxes, Search Input & Favorite Mark/Un-mark have been implemented with Redux Toolkit.
 
+The user will be signed out and redirected to the landing page (`/`) on re-load and the user will be redirected to the `/signin` page on `401 Unauthorized` errors.
+
 The site has been published on Vercel:  
 [https://u07-individuell-uppgift-jobchaser-chas-henrik-nextjs.vercel.app/](https://u07-individuell-uppgift-jobchaser-chas-henrik-nextjs.vercel.app/)
 
