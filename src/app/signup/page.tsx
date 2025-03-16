@@ -16,7 +16,7 @@ export default function SignUp() {
         postalCode: z.string().min(1).max(6).regex(/^[\d|\s|-]+$/, "Invalid postal code").optional().or(z.literal('')),
         city: z.string().min(2).max(50).optional().or(z.literal('')),
         country: z.string().min(2).max(50).optional().or(z.literal('')),
-        phone: z.string().regex(/^[+]{1}(?:[0-9\-\\(\\)\\/.]\s?){6,15}[0-9]{1}$/, "Invalid phone number"),
+        phone: z.string().trim().regex(/^[\+][(]?[\d]{1,3}[)]?[-\s\.]?[(]?[\d]{1,3}[)]?[-\s\.][\d\-\s\.]{5,9}[\d]{1}$/, "Invalid phone number"),
         dateOfBirth: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date of birth").optional().or(z.literal('')),
         email: z.string().email(),
         password: z.string().min(6).max(15)
@@ -63,7 +63,7 @@ export default function SignUp() {
                 {errors.city?.message && <span className="text-red-500 text-base w-fit">{errors.city.message}</span>}</div>
                 <div className={`${styles.formInputCountry}`}><input className={`${styles.formInput}`} type="text" placeholder="Country" {...register("country", { required: false })} />
                 {errors.country?.message && <span className="text-red-500 text-base w-fit">{errors.country.message}</span>}</div>
-                <div className={`${styles.formInputPhone}`}><input className={`${styles.formInput}`} type="tel" size={20} placeholder="Phone: +46 (070) 123 4567" {...register("phone", { required: true })} />
+                <div className={`${styles.formInputPhone}`}><input className={`${styles.formInput}`} type="tel" size={20} placeholder="Phone: +46 (70) 123 4567" {...register("phone", { required: true })} />
                 {errors.phone?.message && <span className="text-red-500 text-base w-fit">{errors.phone.message}</span>}</div>
                 <label className={`${styles.formLabel}`} htmlFor="dob">Date of Birth: <input id="dob" className={`${styles.formInput} ${styles.formInputDateOfBirth}`} type="date" placeholder="Date of Birth (YYYY-MM-DD)" {...register("dateOfBirth", { required: false })} /></label>
                 {errors.dateOfBirth?.message && <span className="text-red-500 text-base w-fit">{errors.dateOfBirth.message}</span>}
