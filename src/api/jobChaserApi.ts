@@ -11,7 +11,6 @@ export async function signUp(user: UserType): Promise<{result: boolean; message:
             headers: {
                 'Content-Type': 'application/json',
             },
-            credentials: 'include',
             body: JSON.stringify(user),
         });
 
