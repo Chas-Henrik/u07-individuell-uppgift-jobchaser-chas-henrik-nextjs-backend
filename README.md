@@ -34,8 +34,7 @@ Dark/light-mode has been implemented with 'useContext' and the filtering ComboBo
 
 The user will be signed out and redirected to the landing page (`/`) on re-load and the user will be redirected to the `/signin` page on `401 Unauthorized` errors.
 
-The site has been published on Vercel:  
-[https://u07-individuell-uppgift-jobchaser-chas-henrik-nextjs.vercel.app/](https://u07-individuell-uppgift-jobchaser-chas-henrik-nextjs.vercel.app/)
+This application is only meant as a test application for the 'u08-jobchaser-backend-chas-henrik' API and has not been published at any site.
 
 ***
 *Known problems:*
