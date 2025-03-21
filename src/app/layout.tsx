@@ -5,8 +5,11 @@ import { Geist, Geist_Mono } from "next/font/google";
 import React, { useState } from 'react';
 import "./globals.css";
 import Header from '@/components/Header'
+import { useEffect } from "react";
 import { ThemeContext } from "@/context/themeContext";
 import StoreProvider from "./StoreProvider";
+import { signOut } from "@/api/jobChaserApi";
+import { redirect } from 'next/navigation';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -39,6 +42,16 @@ export default function RootLayout({
     color: darkTheme ? '#fff' : '#333',
     paddingBottom: '13rem', /* Get darkTheme for the main margin (13rem) too */
   };
+
+  // Sign out on page reload
+  useEffect(() => {
+    async function signOutAsync() {
+      await signOut();  // Make sure we're signed out on reload
+      redirect('/');    // Redirect to home page
+    };
+
+    signOutAsync();
+  }, []);
 
   return (
     <>

@@ -5,7 +5,7 @@
 
 import styles from './Jobs.module.css';
 import { useContext } from 'react';
-import {Loader} from '@/components/Loader';
+import { JobsLoader } from '@/components/JobsLoader';
 import type { JobType } from '@/types/types'
 import { ComboBox } from '@/components/ComboBox';
 import JobList from '@/components/JobList';
@@ -14,7 +14,7 @@ import { useAppSelector, useAppDispatch } from '@/lib/hooks'
 import { setFilterPosition, setFilterRole, setFilterContract, setFilterCity, setFilterRegion, setFilterCountry, setFilterHeadline,
   selectFilterPosition, selectFilterRole, selectFilterContract, selectFilterCity, selectFilterRegion, selectFilterCountry, selectFilterHeadline
   } from '@/lib/features/filters/filterSlice'
-import { setLoadingComplete, selectLoadingComplete, selectJobs } from '@/lib/features/lists/jobsSlice'; 
+import { setJobsLoadingComplete, selectJobsLoadingComplete, selectJobs } from '@/lib/features/lists/jobsSlice'; 
 import { ThemeContext } from "@/context/themeContext";
 
 
@@ -41,7 +41,7 @@ function UpdateFilterTerms(jobsArray: JobType[]): void {
 export default function Home() {
   // Redux Toolkit (jobsSlice)
   const jobsArray = useAppSelector(selectJobs);
-  const loadingComplete = useAppSelector(selectLoadingComplete);
+  const jobsLoadingComplete = useAppSelector(selectJobsLoadingComplete);
 
   const jobsDispatch = useAppDispatch();
 
@@ -71,8 +71,8 @@ export default function Home() {
 
   // Event Handlers
 
-  function LoadingCompleteEventHandler() {
-    jobsDispatch(setLoadingComplete(true));
+  function JobsLoadingCompleteEventHandler() {
+    jobsDispatch(setJobsLoadingComplete(true));
   }
 
   // Helper Functions
@@ -107,7 +107,7 @@ export default function Home() {
       </details>
       <main className={styles.main} style={themeStyles}>
         <JobList jobsArr={filteredJobs}/>
-        {!loadingComplete && <Loader LoadingCompleteEvent={LoadingCompleteEventHandler}/>}
+        {(!jobsLoadingComplete) && <JobsLoader LoadingCompleteEvent={JobsLoadingCompleteEventHandler}/>}
       </main>
     </>
   )

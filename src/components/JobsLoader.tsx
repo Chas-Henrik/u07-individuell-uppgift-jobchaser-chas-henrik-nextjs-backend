@@ -3,14 +3,13 @@
 // https://jobsearch.api.jobtechdev.se/search?offset=0&limit=100&remote=true
 // https://jobsearch.api.jobtechdev.se/search?remote=true
 
-import styles from './Loader.module.css';
+import styles from './JobsLoader.module.css';
 import { useEffect, useState, useContext } from 'react';
 import useSWR from 'swr';
 import type { ApiJobType, ApiJobData, JobType } from '@/types/types'
-import { readLocalStorageFavorites} from '@/store/localStorage';
 import { SpinnerCircular } from 'spinners-react';
-import { useAppDispatch } from '@/lib/hooks'
-import { appendJobs } from '@/lib/features/lists/jobsSlice';
+import { useAppSelector, useAppDispatch } from '@/lib/hooks'
+import { appendJobs, selectFavorites } from '@/lib/features/lists/jobsSlice';
 import { ThemeContext } from "@/context/themeContext";
 
 export type LoaderProps = {
@@ -31,15 +30,16 @@ async function fetcher(url: string) {
     }
 }
 
-export function Loader(props: LoaderProps) {
+export function JobsLoader(props: LoaderProps) {
     // Local state variables
     const [showSpinner, setShowSpinner] = useState<boolean>(true);
     const [pageNum, setPageNum] = useState<number>(0);
-    const [loadingComplete, setLoadingComplete] = useState<boolean>(false);
+    const [loadingComplete] = useState<boolean>(false);
     const pageSize = 100;
 
     // Redux Toolkit (jobsSlice)
     const jobsDispatch = useAppDispatch();
+    const favoriteJobs: JobType[] = useAppSelector(selectFavorites);
 
     // Theme Context
     const themeContext = useContext(ThemeContext);
@@ -82,20 +82,18 @@ export function Loader(props: LoaderProps) {
 
         if(error){
             console.error(error);
-        } else if (data && !loadingComplete) {
-            const favoriteJobs = readLocalStorageFavorites();
+        } else if (typeof data !== 'undefined' && data !== null && !loadingComplete) {
             const total = data?.data?.total.value ?? 0;
             const jobsDataArr = data?.data?.hits.map((job: ApiJobData) => ParseData(job, favoriteJobs)) ?? [];
             jobsDispatch(appendJobs(jobsDataArr) ?? []);
             if((pageNum + 1) * 100 >= total){
                 setShowSpinner(false);
-                setLoadingComplete(true);
                 props.LoadingCompleteEvent();
             } else {
                 setPageNum((prevPageNum) => prevPageNum + 1);
             }
         }
-    }, [props, data, error, loadingComplete, jobsDispatch, pageNum]);
+    }, [props, data, error, favoriteJobs, loadingComplete, jobsDispatch, pageNum]);
 
 
     return (

@@ -1,4 +1,4 @@
-.signinForm {
+.signInForm {
     margin: 5rem auto;
     padding: 2rem;
     height: fit-content;
@@ -14,7 +14,7 @@
     > .header {
         font-size: 2rem;
         font-weight: 600;
-        padding: 1rem;
+        margin-bottom: 1rem;
     }
     > .form {
         display: flex;
@@ -32,6 +32,7 @@
         }
         > .formSubmitButton {
             width: fit-content;
+            margin: 1rem;
             padding: 0.5rem 1rem;
             border-radius: 0.5em;
             border: var(--primary-border);
@@ -46,4 +47,29 @@
     }
 }
 
+.signOutArticle {
+    margin: 5rem auto;
+    padding: 2rem;
+    height: fit-content;
+    width: fit-content;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: var(--primary-border);
+    border-radius: 1em;
+    font-size: 1.5rem;
+    font-weight: 600;
+    > .header {
+        font-size: 2rem;
+        font-weight: 600;
+    }
+    > .formSignOutButton {
+        width: fit-content;
+        margin: 1rem;
+        padding: 0.5rem 1rem;
+        border-radius: 0.5em;
+        border: var(--primary-border);
+    }
+}
 

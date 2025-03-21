@@ -1,11 +1,12 @@
 'use client'
 
 import styles from './Signup.module.css'
-import { useForm, SubmitHandler } from "react-hook-form"
+import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useContext } from "react";
 import { ThemeContext } from "@/context/themeContext";
+import { signUp } from "@/api/jobChaserApi";
 
 export default function SignUp() {
     const formSchema = z.object({
@@ -15,7 +16,7 @@ export default function SignUp() {
         postalCode: z.string().min(1).max(6).regex(/^[\d|\s|-]+$/, "Invalid postal code").optional().or(z.literal('')),
         city: z.string().min(2).max(50).optional().or(z.literal('')),
         country: z.string().min(2).max(50).optional().or(z.literal('')),
-        phone: z.string().regex(/^[+]{1}(?:[0-9\-\\(\\)\\/.]\s?){6,15}[0-9]{1}$/, "Invalid phone number"),
+        phone: z.string().trim().regex(/^[\+][(]?[\d]{1,3}[)]?[-\s\.]?[(]?[\d]{1,3}[)]?[-\s\.][\d\-\s\.]{5,9}[\d]{1}$/, "Invalid phone number"),
         dateOfBirth: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date of birth").optional().or(z.literal('')),
         email: z.string().email(),
         password: z.string().min(6).max(15)
@@ -29,7 +30,12 @@ export default function SignUp() {
     } = useForm<FormData>({
         resolver: zodResolver(formSchema)
     });
-    const onSubmit: SubmitHandler<FormData> = (data: FormData) => console.log(data)
+
+    async function submitHandler(data: FormData): Promise<void> {
+        const res = await signUp(data);
+        alert(res.message);
+    };
+    
     const themeContext = useContext(ThemeContext);
     if (!themeContext) {
         throw new Error("ThemeContext is undefined");
@@ -44,7 +50,7 @@ export default function SignUp() {
     return (
         <article style={themeStyles} className={styles.signUpForm}>
         <h1 className={styles.header}>Create Account</h1>
-            <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
+            <form className={styles.form} onSubmit={handleSubmit(submitHandler)}>
                 <div><input className={`${styles.formInput}`} type="text" placeholder="First Name" {...register("firstname", { required: true })} />
                 {errors.firstname?.message && <span className="text-red-500 text-base w-fit">{errors.firstname.message}</span>}</div>
                 <div><input className={`${styles.formInput}`} type="text" placeholder="Last Name" {...register("lastname", { required: true })} />
@@ -57,7 +63,7 @@ export default function SignUp() {
                 {errors.city?.message && <span className="text-red-500 text-base w-fit">{errors.city.message}</span>}</div>
                 <div className={`${styles.formInputCountry}`}><input className={`${styles.formInput}`} type="text" placeholder="Country" {...register("country", { required: false })} />
                 {errors.country?.message && <span className="text-red-500 text-base w-fit">{errors.country.message}</span>}</div>
-                <div className={`${styles.formInputPhone}`}><input className={`${styles.formInput}`} type="tel" size={20} placeholder="Phone: +46 (070) 123 4567" {...register("phone", { required: true })} />
+                <div className={`${styles.formInputPhone}`}><input className={`${styles.formInput}`} type="tel" size={20} placeholder="Phone: +46 (70) 123 4567" {...register("phone", { required: true })} />
                 {errors.phone?.message && <span className="text-red-500 text-base w-fit">{errors.phone.message}</span>}</div>
                 <label className={`${styles.formLabel}`} htmlFor="dob">Date of Birth: <input id="dob" className={`${styles.formInput} ${styles.formInputDateOfBirth}`} type="date" placeholder="Date of Birth (YYYY-MM-DD)" {...register("dateOfBirth", { required: false })} /></label>
                 {errors.dateOfBirth?.message && <span className="text-red-500 text-base w-fit">{errors.dateOfBirth.message}</span>}
@@ -65,7 +71,7 @@ export default function SignUp() {
                 {errors.email?.message && <span className="text-red-500 text-base w-fit">{errors.email.message}</span>}</div>
                 <div className={`${styles.formInputPassword}`}><input className={`${styles.formInput}`} type="password" placeholder="Password" minLength={6} {...register("password", { required: true })} />
                 {errors.password?.message && <span className="text-red-500 text-base w-fit">{errors.password.message}</span>}</div>
-                <button className={styles.formSubmitButton} type="submit">Submit</button>
+                <button className={styles.formSubmitButton} style={themeStyles} type="submit">Submit</button>
             </form>
         </article>
     )
