@@ -16,7 +16,7 @@ export default function SignUp() {
         postalCode: z.string().min(1).max(6).regex(/^[\d|\s|-]+$/, "Invalid postal code").optional().or(z.literal('')),
         city: z.string().min(2).max(50).optional().or(z.literal('')),
         country: z.string().min(2).max(50).optional().or(z.literal('')),
-        phone: z.string().trim().regex(/^[\+][(]?[\d]{1,3}[)]?[-\s\.]?[(]?[\d]{1,3}[)]?[-\s\.][\d\-\s\.]{5,9}[\d]{1}$/, "Invalid phone number"),
+        phone: z.string().trim().regex(/^([\+][\s]?[(]?[\d]{1,3}[)]?[\-\s\.]*)?[(]?[\d]{1,3}[)]?[-\s\.]*[\d\-\s\.]{5,9}[\d]{1}$/, "Invalid phone number"),
         dateOfBirth: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date of birth").optional().or(z.literal('')),
         email: z.string().email(),
         password: z.string().min(6).max(15)
