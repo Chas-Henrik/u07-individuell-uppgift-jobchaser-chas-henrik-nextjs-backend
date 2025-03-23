@@ -34,7 +34,7 @@ Dark/light-mode has been implemented with 'useContext' and the filtering ComboBo
 
 The user will be signed out and redirected to the landing page (`/`) on re-load, and the user will be redirected to the `/signin` page on `401 Unauthorized` errors.
 
-The site has not been published as it is only intended as 'a test vehicle' for the `u08-jobchaser-backend-chas-henrik` project.
+The site has not been published as it is only intended as 'a test vehicle' for the `u08-skapa-backend-f-r-jobchaser-Chas-Henrik` project.
 
 ***
 *Known problems:*
